@@ -1,28 +1,157 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <title>我的网站</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      text-align: center;
-      padding-top: 100px;
-    }
-    h1 {
-      color: #333;
-    }
-    p {
-      color: #666;
-      font-size: 18px;
-    }
-  </style>
-</head>
-<body>
+/*
+ * Author: Liang Zhuowei
+ *   Date: 30 December 2025
+ *   File: Liang_Zhuowei_rxam.cpp
+ * Purpose: a program which is able to
+ *          create the datestamp and
+ *          calculate the n-th Fibonacci number
+ */
+#include <iostream>
+#include <string>
 
-  <h1>🎉 网站已成功上线</h1>
-  <p>这是一个使用腾讯云 COS 托管的网页</p>
+using std::cin;
+using std::cout;
+using std::endl;
+using std::string;
+using std::ws;
 
-</body>
-</html>
+// global variables
+/*
+ * used to store name which is
+ * then used as output for each option
+ */
+string me;
+
+// declaration of functions
+/*
+ * displays options to screen and
+ * displays a prompt for input.
+ * repeats indefinitely until the
+ * user selects the quit option.
+ * methods will be called dependant
+ * on user input.
+ */
+void menu();
+
+/*
+ * prompts for a date to be entered
+ * and call create_datestamp()
+ */
+void string_function();
+
+/*
+ * prompts for a number and calculate
+ * the n-th Fibonacci number
+ */
+void number_function();
+
+// creates and prints the datestamp
+void create_datestamp(string datestr);
+
+int main() {
+    menu();
+    return 0;
+}
+
+// definition of functions
+/*
+ * displays options to screen and
+ * displays a prompt for input.
+ * repeats indefinitely until the
+ * user selects the quit option.
+ * methods will be called dependant
+ * on user input.
+ */
+void menu() {
+    // holds value of user choice
+    int choice;
+    cout << "Please input your name : " << endl;
+    getline(cin >> ws, me);
+    do {
+        cout << "Here are the options: " << endl;
+        cout << "[1] Create datestamp" << endl;
+        cout << "[2] Calculate the n-th Fibonacci number" << endl;
+        cout << "[3] Quit" << endl;
+        cout << "Please make your choice: " << endl;
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                string_function();
+                break;
+            case 2:
+                number_function();
+                break;
+        }
+    } while (choice != 3);
+    cout << "Goodbye " << me << "! Program exited successfully. " << endl;
+}
+
+/*
+ * prompts for a date to be entered
+ * and call create_datestamp()
+ */
+void string_function() {
+    string date;
+    cout << me << ", this is option 1" << endl;
+    cout << "Please input a date (January 21): " << endl;
+    getline(cin >> ws, date);
+    // call create_datestamp
+    create_datestamp(date);
+}
+
+/*
+ * prompts for a number and calculate
+ * the n-th Fibonacci number
+ */
+void number_function() {
+    cout << me << ", this is option 2" << endl;
+    int number = 0;
+    int fn;
+    int fn_1;
+    int fn_2;
+    cout << "Please input a number: " << endl;
+    cin >> number;
+    if (number >= 0) {
+        for (int i = 0; i <= number; i++) {
+            if (i == 0) {
+                cout << 0;
+                fn_2 = 0;
+            }
+            if (i == 1) {
+                cout << 1;
+                fn_1 = 1;
+            }
+            fn = fn_1 + fn_2;
+            cout << fn;
+            fn_2 = fn_1;
+            fn_1 = fn;
+        }
+        cout << fn << endl;
+    } else {
+        cout << "Enter a positive whole number "
+             << "greater than or equal to 0" << endl;
+    }
+}
+
+// creates and prints the datestamp
+void create_datestamp(string datestr) {
+    // first three characters of datestr
+    string string1;
+    // the position of white space
+    int pos;
+    // substring of all characters after the space
+    string string2;
+    // assign first three characters of datestr
+    string1.assign(datestr, 0, 3);
+    // find the position of white space
+    pos = datestr.find(" ");
+    /*
+     * assign substring of datestr to string2
+     * starting at character after
+     * the space to the end
+     */
+    string2.assign(datestr, pos + 1, datestr.length() - pos - 1);
+    // concatenate string1 and string2
+    datestr = string1 + string2;
+    cout << "Datestamp created: " << datestr << endl;
+}
