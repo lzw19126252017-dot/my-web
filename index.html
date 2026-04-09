@@ -1,50 +1,128 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的第一个网页</title>
-
+    <title>外卖平台</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 100px;
-            background-color: #f5f5f5;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
+        body { font-family: Arial; margin: 0; background: #f5f5f5; }
+        header { background: #ff5722; color: white; padding: 15px; text-align: center; }
+        .container { padding: 20px; }
+        input, button { padding: 8px; margin: 5px; }
+        .food { background: white; padding: 10px; margin: 10px 0; border-radius: 8px; }
+        .cart { background: #fff; padding: 10px; margin-top: 20px; }
     </style>
 </head>
-
 <body>
 
-    <h1>你好，这是我的网页 👋</h1>
-    <p>点击下面的按钮试试看</p>
+<header>
+    <h1>🍔 外卖平台</h1>
+</header>
 
-    <button onclick="showMessage()">点击我</button>
+<div class="container" id="app"></div>
 
-    <script>
-        function showMessage() {
-            alert("你成功点击了按钮！");
-        }
-    </script>
+<script>
+// 数据
+let foods = [
+    {id:1, name:"汉堡", price:20},
+    {id:2, name:"炸鸡", price:25},
+    {id:3, name:"奶茶", price:15}
+];
+
+let cart = [];
+
+// 页面渲染
+function renderLogin() {
+    document.getElementById("app").innerHTML = `
+        <h2>登录 / 注册</h2>
+        <input id="username" placeholder="用户名">
+        <input id="password" type="password" placeholder="密码">
+        <br>
+        <button onclick="register()">注册</button>
+        <button onclick="login()">登录</button>
+    `;
+}
+
+function renderHome() {
+    let html = `<h2>欢迎 ${localStorage.getItem("user")}</h2>`;
+    html += `<button onclick="logout()">退出登录</button>`;
+    
+    html += "<h3>菜单</h3>";
+    foods.forEach(f => {
+        html += `
+            <div class="food">
+                ${f.name} - ￥${f.price}
+                <button onclick="addToCart(${f.id})">加入购物车</button>
+            </div>
+        `;
+    });
+
+    html += `<button onclick="renderCart()">查看购物车</button>`;
+    document.getElementById("app").innerHTML = html;
+}
+
+function renderCart() {
+    let html = `<h2>购物车</h2>`;
+    let total = 0;
+
+    cart.forEach(c => {
+        html += `<div>${c.name} - ￥${c.price}</div>`;
+        total += c.price;
+    });
+
+    html += `<h3>总价：￥${total}</h3>`;
+    html += `<button onclick="checkout()">结算</button>`;
+    html += `<button onclick="renderHome()">返回</button>`;
+
+    document.getElementById("app").innerHTML = html;
+}
+
+// 功能
+function register() {
+    let u = document.getElementById("username").value;
+    let p = document.getElementById("password").value;
+
+    if (!u || !p) return alert("请输入完整");
+
+    localStorage.setItem("user_"+u, p);
+    alert("注册成功！");
+}
+
+function login() {
+    let u = document.getElementById("username").value;
+    let p = document.getElementById("password").value;
+
+    if (localStorage.getItem("user_"+u) === p) {
+        localStorage.setItem("user", u);
+        renderHome();
+    } else {
+        alert("账号或密码错误");
+    }
+}
+
+function logout() {
+    localStorage.removeItem("user");
+    renderLogin();
+}
+
+function addToCart(id) {
+    let food = foods.find(f => f.id === id);
+    cart.push(food);
+    alert("已加入购物车");
+}
+
+function checkout() {
+    alert("下单成功！");
+    cart = [];
+    renderHome();
+}
+
+// 初始化
+if (localStorage.getItem("user")) {
+    renderHome();
+} else {
+    renderLogin();
+}
+</script>
 
 </body>
 </html>
