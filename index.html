@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>Supabase 文件库</title>
+<title>文件传输</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <style>
@@ -153,6 +153,11 @@ h1{
   <div class="box">⏳ 正在上传...</div>
 </div>
 
+<!-- ✅ 只新增这一行（底部声明） -->
+<div style="text-align:center;font-size:12px;color:#888;margin:20px 0;">
+  @一切解释权归本公司所有！
+</div>
+
 <script>
 const SUPABASE_URL = 'https://poyepondpknkzkuwgyxm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_BY4eSXnpQAcMlEUReNhIeQ_n4wA0SEI';
@@ -168,7 +173,7 @@ const supabaseClient = window.supabase.createClient(
 const i18n = {
   zh:{
     title:"☁️ 文件库",
-    statusReady:"✅ 已连接",
+    statusReady:"✅ 已连接到数据库",
     uploading:"上传中...",
     uploadDone:"上传完成",
     drop:"拖拽文件到这里 或 点击上传",
