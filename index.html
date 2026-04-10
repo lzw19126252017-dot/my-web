@@ -2,29 +2,156 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>Supabase 共享文件库</title>
-
+<title>Supabase 文件库</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <style>
-body{font-family:sans-serif;padding:20px;background:#f5f5f5;text-align:center}
-#drop-zone{border:2px dashed #ccc;padding:40px;margin:20px auto;max-width:500px;background:white;cursor:pointer;transition:.2s}
-#drop-zone:hover{border-color:#3ECF8E}
-.file-item{background:white;padding:10px;margin:5px auto;max-width:500px;border-radius:4px;display:flex;justify-content:space-between;align-items:center}
-.btn{padding:5px 10px;margin-left:5px;cursor:pointer}
+*{box-sizing:border-box}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial;
+  margin:0;
+
+  /* 🌟 改成浅蓝色背景 */
+  background: linear-gradient(180deg, #e8f3ff, #ffffff);
+
+  color:#1d1d1f;
+}
+
+h1{
+  font-size:40px;
+  font-weight:600;
+  margin-top:40px;
+}
+
+#status{
+  margin-top:10px;
+  color:#6e6e73;
+  font-size:14px;
+}
+
+.container{
+  max-width:800px;
+  margin:0 auto;
+  padding:20px;
+}
+
+.card{
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(20px);
+  border-radius:20px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.08);
+  padding:30px;
+  margin-top:20px;
+}
+
+#drop-zone{
+  border:2px dashed #bcdcff;
+  border-radius:16px;
+  padding:50px;
+  text-align:center;
+  font-size:18px;
+  color:#5b7aa6;
+  cursor:pointer;
+  transition:all .3s ease;
+}
+
+#drop-zone:hover{
+  border-color:#0071e3;
+  color:#0071e3;
+  background:rgba(0,113,227,0.06);
+}
+
+.file-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+  border-radius:14px;
+  margin-top:10px;
+  background:rgba(255,255,255,0.95);
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+.btn{
+  border:none;
+  border-radius:999px;
+  padding:6px 14px;
+  font-size:13px;
+  cursor:pointer;
+}
+
+.btn-download{background:#0071e3;color:white}
+.btn-delete{background:#ffecec;color:#ff3b30}
+
+/* 上传弹窗 */
+#upload-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+#upload-modal .box{
+  background:white;
+  padding:20px 30px;
+  border-radius:14px;
+  font-size:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* 语言切换 */
+#lang-switch{
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:10000;
+}
+
+#lang-switch select{
+  padding:6px 10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  background:white;
+}
 </style>
 </head>
 
 <body>
 
-<h1>☁️ Supabase 文件库</h1>
+<!-- 🌍 语言 -->
+<div id="lang-switch">
+  <select id="langSelect">
+    <option value="zh">中文</option>
+    <option value="en">English</option>
+    <option value="ja">日本語</option>
+    <option value="es">Español</option>
+  </select>
+</div>
 
+<div class="container">
+<h1 id="title">☁️ 文件库</h1>
 <div id="status">初始化中...</div>
 
-<div id="drop-zone">📂 拖拽文件到这里 / 点击上传</div>
-<input type="file" id="file-input" multiple style="display:none">
+<div class="card">
+  <div id="drop-zone">拖拽文件到这里 或 点击上传</div>
+  <input type="file" id="file-input" multiple style="display:none">
+</div>
 
-<div id="file-list">加载中...</div>
+<div class="card">
+  <input id="search" placeholder="搜索文件..." 
+    style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid #ddd;margin-bottom:12px;">
+  <div id="file-list">加载中...</div>
+</div>
+</div>
+
+<!-- 上传弹窗 -->
+<div id="upload-modal">
+  <div class="box">⏳ 正在上传...</div>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://poyepondpknkzkuwgyxm.supabase.co';
@@ -32,24 +159,109 @@ const SUPABASE_KEY = 'sb_publishable_BY4eSXnpQAcMlEUReNhIeQ_n4wA0SEI';
 const BUCKET = 'uploads';
 const TABLE = 'files';
 
-// ✅ 关键修复：不要叫 supabase
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
 
+/* 🌍 多语言 */
+const i18n = {
+  zh:{
+    title:"☁️ 文件库",
+    statusReady:"✅ 已连接",
+    uploading:"上传中...",
+    uploadDone:"上传完成",
+    drop:"拖拽文件到这里 或 点击上传",
+    loading:"加载中...",
+    empty:"暂无文件",
+    uploadingModal:"⏳ 正在上传...",
+    confirmDelete:"确定删除？",
+    uploadFail:"上传失败",
+    searchPlaceholder:"搜索文件..."
+  },
+  en:{
+    title:"☁️ File Library",
+    statusReady:"✅ Connected",
+    uploading:"Uploading...",
+    uploadDone:"Upload complete",
+    drop:"Drag files here or click to upload",
+    loading:"Loading...",
+    empty:"No files",
+    uploadingModal:"⏳ Uploading...",
+    confirmDelete:"Are you sure?",
+    uploadFail:"Upload failed",
+    searchPlaceholder:"Search files..."
+  },
+  ja:{
+    title:"☁️ ファイルライブラリ",
+    statusReady:"✅ 接続済み",
+    uploading:"アップロード中...",
+    uploadDone:"完了",
+    drop:"ここにファイルをドラッグまたはクリック",
+    loading:"読み込み中...",
+    empty:"ファイルなし",
+    uploadingModal:"⏳ アップロード中...",
+    confirmDelete:"削除しますか？",
+    uploadFail:"失敗",
+    searchPlaceholder:"ファイル検索..."
+  },
+  es:{
+    title:"☁️ Biblioteca",
+    statusReady:"✅ Conectado",
+    uploading:"Subiendo...",
+    uploadDone:"Listo",
+    drop:"Arrastra o haz clic",
+    loading:"Cargando...",
+    empty:"Sin archivos",
+    uploadingModal:"⏳ Subiendo...",
+    confirmDelete:"¿Eliminar?",
+    uploadFail:"Error",
+    searchPlaceholder:"Buscar archivos..."
+  }
+};
+
+let currentLang = "zh";
+let allFiles = [];
+
+function t(k){ return i18n[currentLang][k]; }
+
+function btnText(key){
+  const map = {
+    download:{zh:"下载",en:"Download",ja:"ダウンロード",es:"Descargar"},
+    delete:{zh:"删除",en:"Delete",ja:"削除",es:"Eliminar"}
+  };
+  return map[key][currentLang];
+}
+
+/* 🌍 切换语言 */
+function setLanguage(lang){
+  currentLang = lang;
+
+  document.getElementById("title").innerText = t("title");
+  document.getElementById("status").innerText = t("statusReady");
+  document.getElementById("drop-zone").innerText = t("drop");
+  document.querySelector("#upload-modal .box").innerText = t("uploadingModal");
+  document.getElementById("search").placeholder = t("searchPlaceholder");
+
+  renderFiles(allFiles);
+}
+
+document.getElementById("langSelect").addEventListener("change",(e)=>{
+  setLanguage(e.target.value);
+});
+
+/* UI */
 const statusEl = document.getElementById('status');
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 const fileListEl = document.getElementById('file-list');
 
-statusEl.innerText = "✅ Supabase 已连接";
+statusEl.innerText = t("statusReady");
 
-// 点击上传
 dropZone.onclick = () => fileInput.click();
 fileInput.onchange = e => uploadFiles(e.target.files);
 
-// 拖拽
+/* 拖拽 */
 ['dragenter','dragover','dragleave','drop'].forEach(ev=>{
   dropZone.addEventListener(ev,e=>{
     e.preventDefault();
@@ -57,24 +269,16 @@ fileInput.onchange = e => uploadFiles(e.target.files);
   });
 });
 
-dropZone.addEventListener('dragover',()=>{
-  dropZone.style.borderColor='#3ECF8E';
-});
-
-dropZone.addEventListener('dragleave',()=>{
-  dropZone.style.borderColor='#ccc';
-});
-
 dropZone.addEventListener('drop',(e)=>{
-  dropZone.style.borderColor='#ccc';
   uploadFiles(e.dataTransfer.files);
 });
 
-// 上传文件
+/* 上传 */
 async function uploadFiles(files){
   if(!files.length) return;
 
-  statusEl.innerText = "⏳ 上传中...";
+  document.getElementById('upload-modal').style.display = 'flex';
+  statusEl.innerText = t("uploading");
 
   for(let file of files){
     try{
@@ -86,54 +290,50 @@ async function uploadFiles(files){
 
       if(upErr) throw upErr;
 
-      const { data: urlData } = supabaseClient.storage
+      const { data } = supabaseClient.storage
         .from(BUCKET)
         .getPublicUrl(path);
 
-      const publicUrl = urlData.publicUrl;
-
-      const { error: dbErr } = await supabaseClient
-        .from(TABLE)
-        .insert({
-          original_name: file.name,
-          storage_path: path,
-          public_url: publicUrl,
-          size_bytes: file.size,
-          uploaded_at: new Date().toISOString()
-        });
-
-      if(dbErr) throw dbErr;
+      await supabaseClient.from(TABLE).insert({
+        original_name:file.name,
+        storage_path:path,
+        public_url:data.publicUrl,
+        size_bytes:file.size,
+        uploaded_at:new Date().toISOString()
+      });
 
     }catch(err){
-      alert("❌ "+file.name+" 失败: "+err.message);
+      alert(t("uploadFail")+": "+err.message);
     }
   }
 
-  statusEl.innerText = "✅ 上传完成";
+  document.getElementById('upload-modal').style.display = 'none';
+
+  statusEl.innerText = t("uploadDone");
   fileInput.value = '';
   loadFiles();
 }
 
-// 加载文件
-async function loadFiles(){
-  fileListEl.innerHTML = "Loading...";
+/* 搜索 */
+document.getElementById("search").addEventListener("input",(e)=>{
+  renderFiles(filterFiles(e.target.value));
+});
 
-  const { data, error } = await supabaseClient
-    .from(TABLE)
-    .select('*')
-    .order('uploaded_at',{ascending:false});
+function filterFiles(keyword){
+  if(!keyword) return allFiles;
+  return allFiles.filter(f =>
+    f.original_name.toLowerCase().includes(keyword.toLowerCase())
+  );
+}
 
-  if(error){
-    fileListEl.innerHTML = "❌ "+error.message;
-    return;
-  }
-
-  if(!data || !data.length){
-    fileListEl.innerHTML = "暂无文件";
-    return;
-  }
-
+/* 渲染 */
+function renderFiles(data){
   fileListEl.innerHTML = "";
+
+  if(!data.length){
+    fileListEl.innerHTML = t("empty");
+    return;
+  }
 
   data.forEach(f=>{
     const div = document.createElement('div');
@@ -142,8 +342,12 @@ async function loadFiles(){
     div.innerHTML=`
       <span>${f.original_name}</span>
       <div>
-        <a class="btn" href="${f.public_url}" target="_blank">下载</a>
-        <button class="btn" onclick="delFile('${f.id}','${f.storage_path}')">删除</button>
+        <a class="btn btn-download" href="${f.public_url}" target="_blank">
+          ${btnText("download")}
+        </a>
+        <button class="btn btn-delete" onclick="delFile('${f.id}','${f.storage_path}')">
+          ${btnText("delete")}
+        </button>
       </div>
     `;
 
@@ -151,9 +355,22 @@ async function loadFiles(){
   });
 }
 
-// 删除
+/* 加载 */
+async function loadFiles(){
+  fileListEl.innerHTML = t("loading");
+
+  const { data } = await supabaseClient
+    .from(TABLE)
+    .select('*')
+    .order('uploaded_at',{ascending:false});
+
+  allFiles = data || [];
+  renderFiles(allFiles);
+}
+
+/* 删除 */
 window.delFile = async (id,path)=>{
-  if(!confirm("确定删除？")) return;
+  if(!confirm(t("confirmDelete"))) return;
 
   await supabaseClient.storage.from(BUCKET).remove([path]);
   await supabaseClient.from(TABLE).delete().eq('id',id);
@@ -162,6 +379,7 @@ window.delFile = async (id,path)=>{
 };
 
 loadFiles();
+setLanguage("zh");
 </script>
 
 </body>
