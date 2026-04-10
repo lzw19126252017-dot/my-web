@@ -1,127 +1,167 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>外卖平台</title>
-    <style>
-        body { font-family: Arial; margin: 0; background: #f5f5f5; }
-        header { background: #ff5722; color: white; padding: 15px; text-align: center; }
-        .container { padding: 20px; }
-        input, button { padding: 8px; margin: 5px; }
-        .food { background: white; padding: 10px; margin: 10px 0; border-radius: 8px; }
-        .cart { background: #fff; padding: 10px; margin-top: 20px; }
-    </style>
+<meta charset="UTF-8">
+<title>Supabase 共享文件库</title>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<style>
+body{font-family:sans-serif;padding:20px;background:#f5f5f5;text-align:center}
+#drop-zone{border:2px dashed #ccc;padding:40px;margin:20px auto;max-width:500px;background:white;cursor:pointer;transition:.2s}
+#drop-zone:hover{border-color:#3ECF8E}
+.file-item{background:white;padding:10px;margin:5px auto;max-width:500px;border-radius:4px;display:flex;justify-content:space-between;align-items:center}
+.btn{padding:5px 10px;margin-left:5px;cursor:pointer}
+</style>
 </head>
+
 <body>
 
-<header>
-    <h1>🍔 外卖平台</h1>
-</header>
+<h1>☁️ Supabase 文件库</h1>
 
-<div class="container" id="app"></div>
+<div id="status">初始化中...</div>
+
+<div id="drop-zone">📂 拖拽文件到这里 / 点击上传</div>
+<input type="file" id="file-input" multiple style="display:none">
+
+<div id="file-list">加载中...</div>
 
 <script>
-// 数据
-let foods = [
-    {id:1, name:"汉堡", price:20},
-    {id:2, name:"炸鸡", price:25},
-    {id:3, name:"奶茶", price:15}
-];
+const SUPABASE_URL = 'https://poyepondpknkzkuwgyxm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BY4eSXnpQAcMlEUReNhIeQ_n4wA0SEI';
+const BUCKET = 'uploads';
+const TABLE = 'files';
 
-let cart = [];
+// ✅ 关键修复：不要叫 supabase
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-// 页面渲染
-function renderLogin() {
-    document.getElementById("app").innerHTML = `
-        <h2>登录 / 注册</h2>
-        <input id="username" placeholder="用户名">
-        <input id="password" type="password" placeholder="密码">
-        <br>
-        <button onclick="register()">注册</button>
-        <button onclick="login()">登录</button>
-    `;
-}
+const statusEl = document.getElementById('status');
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const fileListEl = document.getElementById('file-list');
 
-function renderHome() {
-    let html = `<h2>欢迎 ${localStorage.getItem("user")}</h2>`;
-    html += `<button onclick="logout()">退出登录</button>`;
-    
-    html += "<h3>菜单</h3>";
-    foods.forEach(f => {
-        html += `
-            <div class="food">
-                ${f.name} - ￥${f.price}
-                <button onclick="addToCart(${f.id})">加入购物车</button>
-            </div>
-        `;
-    });
+statusEl.innerText = "✅ Supabase 已连接";
 
-    html += `<button onclick="renderCart()">查看购物车</button>`;
-    document.getElementById("app").innerHTML = html;
-}
+// 点击上传
+dropZone.onclick = () => fileInput.click();
+fileInput.onchange = e => uploadFiles(e.target.files);
 
-function renderCart() {
-    let html = `<h2>购物车</h2>`;
-    let total = 0;
+// 拖拽
+['dragenter','dragover','dragleave','drop'].forEach(ev=>{
+  dropZone.addEventListener(ev,e=>{
+    e.preventDefault();
+    e.stopPropagation();
+  });
+});
 
-    cart.forEach(c => {
-        html += `<div>${c.name} - ￥${c.price}</div>`;
-        total += c.price;
-    });
+dropZone.addEventListener('dragover',()=>{
+  dropZone.style.borderColor='#3ECF8E';
+});
 
-    html += `<h3>总价：￥${total}</h3>`;
-    html += `<button onclick="checkout()">结算</button>`;
-    html += `<button onclick="renderHome()">返回</button>`;
+dropZone.addEventListener('dragleave',()=>{
+  dropZone.style.borderColor='#ccc';
+});
 
-    document.getElementById("app").innerHTML = html;
-}
+dropZone.addEventListener('drop',(e)=>{
+  dropZone.style.borderColor='#ccc';
+  uploadFiles(e.dataTransfer.files);
+});
 
-// 功能
-function register() {
-    let u = document.getElementById("username").value;
-    let p = document.getElementById("password").value;
+// 上传文件
+async function uploadFiles(files){
+  if(!files.length) return;
 
-    if (!u || !p) return alert("请输入完整");
+  statusEl.innerText = "⏳ 上传中...";
 
-    localStorage.setItem("user_"+u, p);
-    alert("注册成功！");
-}
+  for(let file of files){
+    try{
+      const path = `${Date.now()}_${file.name}`;
 
-function login() {
-    let u = document.getElementById("username").value;
-    let p = document.getElementById("password").value;
+      const { error: upErr } = await supabaseClient.storage
+        .from(BUCKET)
+        .upload(path,file);
 
-    if (localStorage.getItem("user_"+u) === p) {
-        localStorage.setItem("user", u);
-        renderHome();
-    } else {
-        alert("账号或密码错误");
+      if(upErr) throw upErr;
+
+      const { data: urlData } = supabaseClient.storage
+        .from(BUCKET)
+        .getPublicUrl(path);
+
+      const publicUrl = urlData.publicUrl;
+
+      const { error: dbErr } = await supabaseClient
+        .from(TABLE)
+        .insert({
+          original_name: file.name,
+          storage_path: path,
+          public_url: publicUrl,
+          size_bytes: file.size,
+          uploaded_at: new Date().toISOString()
+        });
+
+      if(dbErr) throw dbErr;
+
+    }catch(err){
+      alert("❌ "+file.name+" 失败: "+err.message);
     }
+  }
+
+  statusEl.innerText = "✅ 上传完成";
+  fileInput.value = '';
+  loadFiles();
 }
 
-function logout() {
-    localStorage.removeItem("user");
-    renderLogin();
+// 加载文件
+async function loadFiles(){
+  fileListEl.innerHTML = "Loading...";
+
+  const { data, error } = await supabaseClient
+    .from(TABLE)
+    .select('*')
+    .order('uploaded_at',{ascending:false});
+
+  if(error){
+    fileListEl.innerHTML = "❌ "+error.message;
+    return;
+  }
+
+  if(!data || !data.length){
+    fileListEl.innerHTML = "暂无文件";
+    return;
+  }
+
+  fileListEl.innerHTML = "";
+
+  data.forEach(f=>{
+    const div = document.createElement('div');
+    div.className='file-item';
+
+    div.innerHTML=`
+      <span>${f.original_name}</span>
+      <div>
+        <a class="btn" href="${f.public_url}" target="_blank">下载</a>
+        <button class="btn" onclick="delFile('${f.id}','${f.storage_path}')">删除</button>
+      </div>
+    `;
+
+    fileListEl.appendChild(div);
+  });
 }
 
-function addToCart(id) {
-    let food = foods.find(f => f.id === id);
-    cart.push(food);
-    alert("已加入购物车");
-}
+// 删除
+window.delFile = async (id,path)=>{
+  if(!confirm("确定删除？")) return;
 
-function checkout() {
-    alert("下单成功！");
-    cart = [];
-    renderHome();
-}
+  await supabaseClient.storage.from(BUCKET).remove([path]);
+  await supabaseClient.from(TABLE).delete().eq('id',id);
 
-// 初始化
-if (localStorage.getItem("user")) {
-    renderHome();
-} else {
-    renderLogin();
-}
+  loadFiles();
+};
+
+loadFiles();
 </script>
 
 </body>
