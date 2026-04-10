@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>文件传输</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
@@ -84,8 +85,8 @@ h1{
 .btn-download{background:#0071e3;color:white}
 .btn-delete{background:#ffecec;color:#ff3b30}
 
-/* 上传弹窗 */
-#upload-modal{
+/* 删除进度弹窗 */
+#delete-modal{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.35);
@@ -95,12 +96,91 @@ h1{
   z-index:9999;
 }
 
-#upload-modal .box{
+#delete-modal .box{
   background:white;
-  padding:20px 30px;
+  padding:30px;
   border-radius:14px;
-  font-size:16px;
   box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  width:90%;
+  max-width:300px;
+  text-align:center;
+}
+
+#delete-modal .box h3{
+  margin:0 0 20px 0;
+  font-size:16px;
+  color:#1d1d1f;
+}
+
+#delete-progress{
+  width:100%;
+  height:8px;
+  background:#e5e5ea;
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:10px;
+}
+
+#delete-progress-bar{
+  height:100%;
+  background:linear-gradient(90deg, #0071e3, #34c759);
+  width:0%;
+  transition:width 0.3s ease;
+  border-radius:4px;
+}
+
+#delete-progress-text{
+  font-size:13px;
+  color:#6e6e73;
+}
+
+/* 下载进度弹窗 */
+#download-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+#download-modal .box{
+  background:white;
+  padding:30px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  width:90%;
+  max-width:300px;
+  text-align:center;
+}
+
+#download-modal .box h3{
+  margin:0 0 20px 0;
+  font-size:16px;
+  color:#1d1d1f;
+}
+
+#download-progress{
+  width:100%;
+  height:8px;
+  background:#e5e5ea;
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:10px;
+}
+
+#download-progress-bar{
+  height:100%;
+  background:linear-gradient(90deg, #0071e3, #34c759);
+  width:0%;
+  transition:width 0.3s ease;
+  border-radius:4px;
+}
+
+#download-progress-text{
+  font-size:13px;
+  color:#6e6e73;
 }
 
 /* 语言切换 */
@@ -117,13 +197,489 @@ h1{
   border:1px solid #ddd;
   background:white;
 }
+
+/* 登录页面 */
+#login-container{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  background: linear-gradient(180deg, #e8f3ff, #ffffff);
+}
+
+.login-card{
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(20px);
+  border-radius:20px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.1);
+  padding:40px;
+  width:100%;
+  max-width:380px;
+}
+
+.login-card h2{
+  text-align:center;
+  margin-top:0;
+  margin-bottom:30px;
+  font-size:28px;
+  font-weight:600;
+}
+
+.login-group{
+  margin-bottom:20px;
+}
+
+.login-group label{
+  display:block;
+  margin-bottom:8px;
+  font-size:14px;
+  font-weight:500;
+  color:#1d1d1f;
+}
+
+.login-group input{
+  width:100%;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid #d2d2d7;
+  font-size:14px;
+  transition:border-color .2s ease;
+}
+
+.login-group input:focus{
+  outline:none;
+  border-color:#0071e3;
+  box-shadow:0 0 0 3px rgba(0,113,227,0.1);
+}
+
+.login-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:999px;
+  background:#0071e3;
+  color:white;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .3s ease;
+  margin-top:10px;
+}
+
+.login-btn:hover{
+  background:#0066cc;
+}
+
+.login-btn:active{
+  transform:scale(0.98);
+}
+
+.login-error{
+  color:#ff3b30;
+  font-size:13px;
+  margin-top:10px;
+  text-align:center;
+}
+
+#app-container{
+  display:none;
+}
+
+.logout-btn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  z-index:10000;
+  padding:8px 16px;
+  border:none;
+  border-radius:10px;
+  background:#ff3b30;
+  color:white;
+  cursor:pointer;
+  font-size:13px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 28px;
+    margin-top: 20px;
+  }
+  
+  .card {
+    padding: 20px;
+    margin-top: 15px;
+    border-radius: 15px;
+  }
+  
+  #drop-zone {
+    padding: 30px 20px;
+    font-size: 16px;
+  }
+  
+  .file-item {
+    padding: 12px 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .file-item > div:last-child {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .tab-buttons {
+    padding: 3px;
+  }
+  
+  .tab-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .file-categories {
+    gap: 6px;
+  }
+  
+  .category-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+  
+  .device-card {
+    padding: 15px;
+  }
+  
+  .device-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .device-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .btn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  
+  .logout-btn {
+    bottom: 15px;
+    right: 15px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  /* 弹窗响应式 */
+  #upload-modal .box,
+  #delete-modal .box,
+  #download-modal .box {
+    width: 90%;
+    max-width: 300px;
+    padding: 25px;
+  }
+  
+  #upload-modal .box h3,
+  #delete-modal .box h3,
+  #download-modal .box h3 {
+    font-size: 16px;
+  }
+  
+  /* 触摸友好 */
+  .btn, .category-btn, .tab-btn, .login-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-top: 15px;
+  }
+  
+  .card {
+    padding: 15px;
+    margin-top: 10px;
+  }
+  
+  #drop-zone {
+    padding: 20px 15px;
+    font-size: 14px;
+  }
+  
+  .file-categories {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .category-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+  
+  .device-card {
+    padding: 12px;
+  }
+  
+  .device-info {
+    font-size: 13px;
+  }
+  
+  .btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  
+  /* 登录页面响应式 */
+  .login-card {
+    width: 95%;
+    max-width: 350px;
+    padding: 30px 20px;
+  }
+  
+  .login-card h2 {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+  
+  .login-group input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .login-btn {
+    padding: 10px;
+    font-size: 15px;
+  }
+  
+  .logout-btn {
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+  
+  /* 弹窗响应式 */
+  #upload-modal .box,
+  #delete-modal .box,
+  #download-modal .box {
+    width: 95%;
+    max-width: 280px;
+    padding: 25px 20px;
+  }
+  
+  #upload-modal .box h3,
+  #delete-modal .box h3,
+  #download-modal .box h3 {
+    font-size: 15px;
+    margin-bottom: 15px;
+  }
+}
+
+/* 标签页样式 */
+.tab-container{
+  margin-top:20px;
+}
+
+.tab-buttons{
+  display:flex;
+  background:rgba(255,255,255,0.9);
+  border-radius:12px;
+  padding:4px;
+  margin-bottom:20px;
+}
+
+.tab-btn{
+  flex:1;
+  padding:10px 20px;
+  border:none;
+  border-radius:8px;
+  background:none;
+  color:#6e6e73;
+  font-size:14px;
+  font-weight:500;
+  cursor:pointer;
+  transition:all .3s ease;
+}
+
+.tab-btn.active{
+  background:white;
+  color:#0071e3;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tab-content{
+  display:none;
+}
+
+.tab-content.active{
+  display:block;
+}
+
+/* 文件分类 */
+.file-categories{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:20px;
+}
+
+.category-btn{
+  padding:6px 12px;
+  border:1px solid #ddd;
+  border-radius:20px;
+  background:white;
+  color:#666;
+  font-size:12px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.category-btn.active{
+  background:#0071e3;
+  color:white;
+  border-color:#0071e3;
+}
+
+.category-btn:hover{
+  border-color:#0071e3;
+  color:#0071e3;
+}
+
+/* 设备资源 */
+.device-section{
+  margin-bottom:30px;
+}
+
+.device-card{
+  background:white;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:15px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+  border:1px solid #e5e5ea;
+}
+
+.device-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.device-title{
+  font-size:16px;
+  font-weight:600;
+  color:#1d1d1f;
+}
+
+.device-status{
+  padding:4px 8px;
+  border-radius:12px;
+  font-size:12px;
+  font-weight:500;
+}
+
+.status-connected{background:#34c759;color:white;}
+.status-available{background:#ff9500;color:white;}
+.status-offline{background:#8e8e93;color:white;}
+
+.device-info{
+  color:#6e6e73;
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.device-actions{
+  display:flex;
+  gap:10px;
+}
+
+.btn-connect{
+  padding:6px 12px;
+  border:1px solid #0071e3;
+  border-radius:6px;
+  background:#0071e3;
+  color:white;
+  font-size:12px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.btn-connect:hover{
+  background:#0066cc;
+}
+
+.btn-scan{
+  padding:6px 12px;
+  border:1px solid #34c759;
+  border-radius:6px;
+  background:#34c759;
+  color:white;
+  font-size:12px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.btn-scan:hover{
+  background:#28a745;
+}
+
+.btn-search{
+  padding:6px 12px;
+  border:1px solid #ff9500;
+  border-radius:6px;
+  background:#ff9500;
+  color:white;
+  font-size:12px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+
+.btn-search:hover{
+  background:#e8890b;
+}
 </style>
 </head>
 
 <body>
 
+<!-- 登录页面 -->
+<div id="login-container">
+  <div class="login-card">
+    <h2 id="login-title">登录</h2>
+    <div class="login-group">
+      <label id="login-username-label">用户名</label>
+      <input type="text" id="login-username" placeholder="输入用户名">
+    </div>
+    <div class="login-group">
+      <label id="login-password-label">密码</label>
+      <input type="password" id="login-password" placeholder="输入密码">
+    </div>
+    <button class="login-btn" id="login-btn" onclick="handleLogin()">登录</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- 文件库应用 -->
+<div id="app-container">
 <!-- 🌍 语言 -->
 <div id="lang-switch">
+  <button class="logout-btn" id="logout-btn" onclick="handleLogout()">退出登录</button>
   <select id="langSelect">
     <option value="zh">中文</option>
     <option value="en">English</option>
@@ -136,29 +692,394 @@ h1{
 <h1 id="title">☁️ 文件库</h1>
 <div id="status">初始化中...</div>
 
-<div class="card">
-  <div id="drop-zone">拖拽文件到这里 或 点击上传</div>
-  <input type="file" id="file-input" multiple style="display:none">
+<!-- 标签页 -->
+<div class="tab-container">
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="switchTab('files')" id="files-tab-btn">文件库</button>
+    <button class="tab-btn" onclick="switchTab('devices')" id="devices-tab-btn">设备资源</button>
+  </div>
+
+  <!-- 文件库标签页 -->
+  <div id="files-tab" class="tab-content active">
+    <div class="card">
+      <div id="drop-zone">拖拽文件到这里 或 点击上传</div>
+      <input type="file" id="file-input" multiple style="display:none">
+    </div>
+
+    <div class="card">
+      <div class="file-categories">
+        <button class="category-btn active" onclick="filterByCategory('all')">全部</button>
+        <button class="category-btn" onclick="filterByCategory('image')">图片</button>
+        <button class="category-btn" onclick="filterByCategory('document')">文档</button>
+        <button class="category-btn" onclick="filterByCategory('ppt')">PPT</button>
+        <button class="category-btn" onclick="filterByCategory('excel')">Excel</button>
+        <button class="category-btn" onclick="filterByCategory('pdf')">PDF</button>
+        <button class="category-btn" onclick="filterByCategory('video')">视频</button>
+        <button class="category-btn" onclick="filterByCategory('audio')">音频</button>
+        <button class="category-btn" onclick="filterByCategory('archive')">压缩包</button>
+        <button class="category-btn" onclick="filterByCategory('other')">其他</button>
+      </div>
+      <input id="search" placeholder="搜索文件..." 
+        style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid #ddd;margin-bottom:12px;">
+      <div id="file-list">加载中...</div>
+    </div>
+  </div>
+
+  <!-- 设备资源标签页 -->
+  <div id="devices-tab" class="tab-content">
+    <div class="card">
+      <div class="device-section">
+        <h3 style="margin:0 0 20px 0;font-size:18px;font-weight:600;">打印机</h3>
+        <div id="printers-list">
+          <div class="device-card">
+            <div class="device-header">
+              <div class="device-title">正在搜索打印机...</div>
+              <div class="device-status status-offline">离线</div>
+            </div>
+            <div class="device-info">点击"搜索设备"查找可用打印机</div>
+            <div class="device-actions">
+              <button class="btn-search" onclick="searchPrinters()">搜索设备</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="device-section">
+        <h3 style="margin:0 0 20px 0;font-size:18px;font-weight:600;">扫描器</h3>
+        <div id="scanners-list">
+          <div class="device-card">
+            <div class="device-header">
+              <div class="device-title">正在搜索扫描器...</div>
+              <div class="device-status status-offline">离线</div>
+            </div>
+            <div class="device-info">点击"搜索设备"查找可用扫描器</div>
+            <div class="device-actions">
+              <button class="btn-search" onclick="searchScanners()">搜索设备</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="device-section">
+        <h3 style="margin:0 0 20px 0;font-size:18px;font-weight:600;">网络设备</h3>
+        <div id="network-devices-list">
+          <div class="device-card">
+            <div class="device-header">
+              <div class="device-title">正在搜索网络设备...</div>
+              <div class="device-status status-offline">离线</div>
+            </div>
+            <div class="device-info">点击"搜索设备"查找网络设备</div>
+            <div class="device-actions">
+              <button class="btn-search" onclick="searchNetworkDevices()">搜索设备</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-  <input id="search" placeholder="搜索文件..." 
-    style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid #ddd;margin-bottom:12px;">
-  <div id="file-list">加载中...</div>
-</div>
+<!-- 删除进度弹窗 -->
+<div id="delete-modal">
+  <div class="box">
+    <h3 id="delete-modal-title">正在删除...</h3>
+    <div id="delete-progress">
+      <div id="delete-progress-bar"></div>
+    </div>
+    <div id="delete-progress-text">0%</div>
+  </div>
 </div>
 
-<!-- 上传弹窗 -->
-<div id="upload-modal">
-  <div class="box">⏳ 正在上传...</div>
+<!-- 下载进度弹窗 -->
+<div id="download-modal">
+  <div class="box">
+    <h3 id="download-modal-title">正在下载...</h3>
+    <div id="download-progress">
+      <div id="download-progress-bar"></div>
+    </div>
+    <div id="download-progress-text">0%</div>
+  </div>
 </div>
 
 <!-- ✅ 只新增这一行（底部声明） -->
 <div style="text-align:center;font-size:12px;color:#888;margin:20px 0;">
   @一切解释权归本公司所有！
 </div>
+</div>
 
 <script>
+// 简单的登录验证（用户名和密码）
+const validCredentials = {
+  username: "admin",
+  password: "123456"
+};
+
+// 检查是否已登录
+function isLoggedIn(){
+  return sessionStorage.getItem('loggedIn') === 'true';
+}
+
+// 处理登录
+function handleLogin(){
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errorEl = document.getElementById('login-error');
+
+  if(!username || !password){
+    errorEl.innerText = '用户名和密码不能为空';
+    return;
+  }
+
+  if(username === validCredentials.username && password === validCredentials.password){
+    sessionStorage.setItem('loggedIn', 'true');
+    showApp();
+  } else {
+    errorEl.innerText = '用户名或密码错误';
+    document.getElementById('login-password').value = '';
+  }
+}
+
+// 处理退出登录
+function handleLogout(){
+  sessionStorage.removeItem('loggedIn');
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-error').innerText = '';
+  showLogin();
+}
+
+// 显示应用
+function showApp(){
+  document.getElementById('login-container').style.display = 'none';
+  document.getElementById('app-container').style.display = 'block';
+  loadFiles();
+}
+
+// 显示登录页面
+function showLogin(){
+  document.getElementById('login-container').style.display = 'flex';
+  document.getElementById('app-container').style.display = 'none';
+}
+
+// 回车键登录
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('login-password').addEventListener('keypress', (e) => {
+    if(e.key === 'Enter') handleLogin();
+  });
+
+  // 初始化
+  if(isLoggedIn()){
+    showApp();
+  } else {
+    showLogin();
+  }
+});
+
+// 标签页切换
+function switchTab(tabName){
+  // 切换按钮状态
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+  
+  // 切换内容
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+  document.getElementById(`${tabName}-tab`).classList.add('active');
+  
+  // 如果切换到设备标签页，初始化设备搜索
+  if(tabName === 'devices'){
+    initializeDevices();
+  }
+}
+
+// 文件分类
+let currentCategory = 'all';
+
+function filterByCategory(category){
+  currentCategory = category;
+  
+  // 更新按钮状态
+  document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`[onclick="filterByCategory('${category}')"]`).classList.add('active');
+  
+  // 重新渲染文件列表
+  renderFiles(filterFiles(document.getElementById('search').value));
+}
+
+function getFileCategory(filename){
+  const ext = filename.split('.').pop().toLowerCase();
+  
+  const categories = {
+    image: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'ico'],
+    document: ['doc', 'docx', 'txt', 'rtf'],
+    ppt: ['ppt', 'pptx', 'pps', 'ppsx'],
+    excel: ['xls', 'xlsx', 'csv'],
+    pdf: ['pdf'],
+    video: ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'],
+    audio: ['mp3', 'wav', 'flac', 'aac', 'ogg', 'wma'],
+    archive: ['zip', 'rar', '7z', 'tar', 'gz', 'bz2']
+  };
+  
+  for(const [category, extensions] of Object.entries(categories)){
+    if(extensions.includes(ext)){
+      return category;
+    }
+  }
+  
+  return 'other';
+}
+
+// 设备相关功能
+function initializeDevices(){
+  // 初始化时自动搜索一次设备
+  searchPrinters();
+  searchScanners();
+  searchNetworkDevices();
+}
+
+function searchPrinters(){
+  const printersList = document.getElementById('printers-list');
+  printersList.innerHTML = `
+    <div class="device-card">
+      <div class="device-header">
+        <div class="device-title">正在搜索打印机...</div>
+        <div class="device-status status-offline">搜索中</div>
+      </div>
+      <div class="device-info">请稍候</div>
+    </div>
+  `;
+  
+  // 模拟搜索打印机
+  setTimeout(() => {
+    const mockPrinters = [
+      {name: 'HP LaserJet Pro MFP', ip: '192.168.1.100', status: 'available'},
+      {name: 'Canon PIXMA TS8350', ip: '192.168.1.101', status: 'connected'},
+      {name: 'Brother MFC-L2710DW', ip: '192.168.1.102', status: 'offline'}
+    ];
+    
+    renderDevices('printers-list', mockPrinters, 'printer');
+  }, 2000);
+}
+
+function searchScanners(){
+  const scannersList = document.getElementById('scanners-list');
+  scannersList.innerHTML = `
+    <div class="device-card">
+      <div class="device-header">
+        <div class="device-title">正在搜索扫描器...</div>
+        <div class="device-status status-offline">搜索中</div>
+      </div>
+      <div class="device-info">请稍候</div>
+    </div>
+  `;
+  
+  // 模拟搜索扫描器
+  setTimeout(() => {
+    const mockScanners = [
+      {name: 'Epson Perfection V39', status: 'available'},
+      {name: 'Canon CanoScan LiDE 400', status: 'connected'},
+      {name: 'HP ScanJet Pro 2500 f1', status: 'offline'}
+    ];
+    
+    renderDevices('scanners-list', mockScanners, 'scanner');
+  }, 2000);
+}
+
+function searchNetworkDevices(){
+  const networkList = document.getElementById('network-devices-list');
+  networkList.innerHTML = `
+    <div class="device-card">
+      <div class="device-header">
+        <div class="device-title">正在搜索网络设备...</div>
+        <div class="device-status status-offline">搜索中</div>
+      </div>
+      <div class="device-info">请稍候</div>
+    </div>
+  `;
+  
+  // 模拟搜索网络设备
+  setTimeout(() => {
+    const mockDevices = [
+      {name: 'NAS服务器', ip: '192.168.1.200', type: 'storage', status: 'connected'},
+      {name: '网络摄像头', ip: '192.168.1.201', type: 'camera', status: 'available'},
+      {name: '智能家居中枢', ip: '192.168.1.202', type: 'hub', status: 'offline'}
+    ];
+    
+    renderDevices('network-devices-list', mockDevices, 'network');
+  }, 2000);
+}
+
+function renderDevices(containerId, devices, type){
+  const container = document.getElementById(containerId);
+  
+  if(devices.length === 0){
+    container.innerHTML = `
+      <div class="device-card">
+        <div class="device-header">
+          <div class="device-title">未找到设备</div>
+          <div class="device-status status-offline">无设备</div>
+        </div>
+        <div class="device-info">请检查设备是否已连接到网络</div>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = devices.map(device => {
+    let actions = '';
+    let info = '';
+    
+    if(type === 'printer'){
+      info = `IP地址: ${device.ip}`;
+      actions = device.status === 'connected' 
+        ? `<button class="btn-connect" onclick="disconnectDevice('${device.name}', '${type}')">断开连接</button>`
+        : `<button class="btn-connect" onclick="connectDevice('${device.name}', '${type}')">连接</button>`;
+    } else if(type === 'scanner'){
+      actions = device.status === 'connected'
+        ? `<button class="btn-scan" onclick="scanDocument('${device.name}')">开始扫描</button>
+           <button class="btn-connect" onclick="disconnectDevice('${device.name}', '${type}')">断开连接</button>`
+        : `<button class="btn-connect" onclick="connectDevice('${device.name}', '${type}')">连接</button>`;
+    } else if(type === 'network'){
+      info = `IP地址: ${device.ip} | 类型: ${device.type}`;
+      actions = `<button class="btn-connect" onclick="connectDevice('${device.name}', '${type}')">连接</button>`;
+    }
+    
+    return `
+      <div class="device-card">
+        <div class="device-header">
+          <div class="device-title">${device.name}</div>
+          <div class="device-status status-${device.status}">${getStatusText(device.status)}</div>
+        </div>
+        <div class="device-info">${info}</div>
+        <div class="device-actions">${actions}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getStatusText(status){
+  const statusMap = {
+    connected: '已连接',
+    available: '可用',
+    offline: '离线'
+  };
+  return statusMap[status] || status;
+}
+
+function connectDevice(name, type){
+  alert(`正在连接${type === 'printer' ? '打印机' : type === 'scanner' ? '扫描器' : '网络设备'}: ${name}`);
+  // 这里可以添加实际的连接逻辑
+}
+
+function disconnectDevice(name, type){
+  alert(`已断开${type === 'printer' ? '打印机' : type === 'scanner' ? '扫描器' : '网络设备'}: ${name}`);
+  // 这里可以添加实际的断开连接逻辑
+}
+
+function scanDocument(name){
+  alert(`正在使用扫描器 ${name} 扫描文档...`);
+  // 这里可以添加实际的扫描逻辑
+}
+
 const SUPABASE_URL = 'https://poyepondpknkzkuwgyxm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_BY4eSXnpQAcMlEUReNhIeQ_n4wA0SEI';
 const BUCKET = 'uploads';
@@ -179,10 +1100,30 @@ const i18n = {
     drop:"拖拽文件到这里 或 点击上传",
     loading:"加载中...",
     empty:"暂无文件",
-    uploadingModal:"⏳ 正在上传...",
     confirmDelete:"确定删除？",
     uploadFail:"上传失败",
-    searchPlaceholder:"搜索文件..."
+    searchPlaceholder:"搜索文件...",
+    fileLibrary:"文件库",
+    deviceResources:"设备资源",
+    all:"全部",
+    image:"图片",
+    document:"文档",
+    ppt:"PPT",
+    excel:"Excel",
+    pdf:"PDF",
+    video:"视频",
+    audio:"音频",
+    archive:"压缩包",
+    other:"其他",
+    printers:"打印机",
+    scanners:"扫描器",
+    networkDevices:"网络设备",
+    searchingDevices:"正在搜索...",
+    noDevicesFound:"未找到设备",
+    connect:"连接",
+    disconnect:"断开连接",
+    startScan:"开始扫描",
+    searchDevices:"搜索设备"
   },
   en:{
     title:"☁️ File Library",
@@ -192,10 +1133,30 @@ const i18n = {
     drop:"Drag files here or click to upload",
     loading:"Loading...",
     empty:"No files",
-    uploadingModal:"⏳ Uploading...",
     confirmDelete:"Are you sure?",
     uploadFail:"Upload failed",
-    searchPlaceholder:"Search files..."
+    searchPlaceholder:"Search files...",
+    fileLibrary:"File Library",
+    deviceResources:"Device Resources",
+    all:"All",
+    image:"Images",
+    document:"Documents",
+    ppt:"PPT",
+    excel:"Excel",
+    pdf:"PDF",
+    video:"Videos",
+    audio:"Audio",
+    archive:"Archives",
+    other:"Other",
+    printers:"Printers",
+    scanners:"Scanners",
+    networkDevices:"Network Devices",
+    searchingDevices:"Searching...",
+    noDevicesFound:"No devices found",
+    connect:"Connect",
+    disconnect:"Disconnect",
+    startScan:"Start Scan",
+    searchDevices:"Search Devices"
   },
   ja:{
     title:"☁️ ファイルライブラリ",
@@ -205,10 +1166,30 @@ const i18n = {
     drop:"ここにファイルをドラッグまたはクリック",
     loading:"読み込み中...",
     empty:"ファイルなし",
-    uploadingModal:"⏳ アップロード中...",
     confirmDelete:"削除しますか？",
     uploadFail:"失敗",
-    searchPlaceholder:"ファイル検索..."
+    searchPlaceholder:"ファイル検索...",
+    fileLibrary:"ファイルライブラリ",
+    deviceResources:"デバイスリソース",
+    all:"すべて",
+    image:"画像",
+    document:"文書",
+    ppt:"PPT",
+    excel:"Excel",
+    pdf:"PDF",
+    video:"動画",
+    audio:"音声",
+    archive:"圧縮ファイル",
+    other:"その他",
+    printers:"プリンター",
+    scanners:"スキャナー",
+    networkDevices:"ネットワークデバイス",
+    searchingDevices:"検索中...",
+    noDevicesFound:"デバイスが見つかりません",
+    connect:"接続",
+    disconnect:"切断",
+    startScan:"スキャン開始",
+    searchDevices:"デバイス検索"
   },
   es:{
     title:"☁️ Biblioteca",
@@ -218,10 +1199,30 @@ const i18n = {
     drop:"Arrastra o haz clic",
     loading:"Cargando...",
     empty:"Sin archivos",
-    uploadingModal:"⏳ Subiendo...",
     confirmDelete:"¿Eliminar?",
     uploadFail:"Error",
-    searchPlaceholder:"Buscar archivos..."
+    searchPlaceholder:"Buscar archivos...",
+    fileLibrary:"Biblioteca de Archivos",
+    deviceResources:"Recursos de Dispositivos",
+    all:"Todo",
+    image:"Imágenes",
+    document:"Documentos",
+    ppt:"PPT",
+    excel:"Excel",
+    pdf:"PDF",
+    video:"Videos",
+    audio:"Audio",
+    archive:"Archivos",
+    other:"Otro",
+    printers:"Impresoras",
+    scanners:"Escáneres",
+    networkDevices:"Dispositivos de Red",
+    searchingDevices:"Buscando...",
+    noDevicesFound:"No se encontraron dispositivos",
+    connect:"Conectar",
+    disconnect:"Desconectar",
+    startScan:"Iniciar Escaneo",
+    searchDevices:"Buscar Dispositivos"
   }
 };
 
@@ -245,8 +1246,18 @@ function setLanguage(lang){
   document.getElementById("title").innerText = t("title");
   document.getElementById("status").innerText = t("statusReady");
   document.getElementById("drop-zone").innerText = t("drop");
-  document.querySelector("#upload-modal .box").innerText = t("uploadingModal");
   document.getElementById("search").placeholder = t("searchPlaceholder");
+  
+  // 更新标签页按钮
+  document.getElementById("files-tab-btn").innerText = t("fileLibrary");
+  document.getElementById("devices-tab-btn").innerText = t("deviceResources");
+  
+  // 更新文件分类按钮
+  const categoryButtons = document.querySelectorAll('.category-btn');
+  const categories = ['all', 'image', 'document', 'ppt', 'excel', 'pdf', 'video', 'audio', 'archive', 'other'];
+  categoryButtons.forEach((btn, index) => {
+    btn.innerText = t(categories[index]);
+  });
 
   renderFiles(allFiles);
 }
@@ -282,19 +1293,96 @@ dropZone.addEventListener('drop',(e)=>{
 async function uploadFiles(files){
   if(!files.length) return;
 
-  document.getElementById('upload-modal').style.display = 'flex';
+  // 等待 DOM 完全就绪
+  await new Promise(resolve => {
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', resolve);
+    } else {
+      resolve();
+    }
+  });
+
+  // 获取上传弹窗元素
+  let uploadModal = document.getElementById('upload-modal');
+  let progressBar = document.getElementById('upload-progress-bar');
+  let progressText = document.getElementById('upload-progress-text');
+
+  // 如果元素不存在，动态创建
+  if(!uploadModal){
+    const container = document.getElementById('app-container') || document.body;
+    uploadModal = document.createElement('div');
+    uploadModal.id = 'upload-modal';
+    uploadModal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:9999;';
+    
+    uploadModal.innerHTML = `
+      <div style="background:white;padding:30px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.2);width:90%;max-width:300px;text-align:center;">
+        <h3 style="margin:0 0 20px 0;font-size:16px;color:#1d1d1f;">正在上传...</h3>
+        <div id="upload-progress" style="width:100%;height:8px;background:#e5e5ea;border-radius:4px;overflow:hidden;margin-bottom:10px;">
+          <div id="upload-progress-bar" style="height:100%;background:linear-gradient(90deg, #0071e3, #34c759);width:0%;transition:width 0.3s ease;border-radius:4px;"></div>
+        </div>
+        <div id="upload-progress-text" style="font-size:13px;color:#6e6e73;">0%</div>
+      </div>
+    `;
+    container.appendChild(uploadModal);
+    
+    progressBar = document.getElementById('upload-progress-bar');
+    progressText = document.getElementById('upload-progress-text');
+  }
+
+  uploadModal.style.display = 'flex';
+  if(progressBar) progressBar.style.width = '0%';
+  if(progressText) progressText.innerText = '0%';
   statusEl.innerText = t("uploading");
+
+  const totalFiles = files.length;
+  let uploadedFiles = 0;
 
   for(let file of files){
     try{
-      const path = `${Date.now()}_${file.name}`;
+      const path = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}_${file.name}`;
 
-      const { error: upErr } = await supabaseClient.storage
-        .from(BUCKET)
-        .upload(path,file);
+      // 使用 XMLHttpRequest 获取实时上传进度
+      await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        
+        xhr.upload.addEventListener('progress', (e) => {
+          if(e.lengthComputable){
+            const fileProgress = Math.round((e.loaded / e.total) * 100);
+            const overallProgress = Math.round(((uploadedFiles + fileProgress / 100) / totalFiles) * 100);
+            
+            if(progressBar) progressBar.style.width = overallProgress + '%';
+            if(progressText) progressText.innerText = overallProgress + '%';
+          }
+        });
 
-      if(upErr) throw upErr;
+        xhr.addEventListener('load', () => {
+          if(xhr.status >= 200 && xhr.status < 300){
+            resolve();
+          } else {
+            reject(new Error(`上传失败 (${xhr.status})`));
+          }
+        });
 
+        xhr.addEventListener('error', () => {
+          reject(new Error('网络错误'));
+        });
+
+        xhr.addEventListener('timeout', () => {
+          reject(new Error('上传超时'));
+        });
+
+        xhr.timeout = 300000; // 5分钟超时
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        xhr.open('POST', `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`, true);
+        xhr.setRequestHeader('Authorization', `Bearer ${SUPABASE_KEY}`);
+        xhr.setRequestHeader('apikey', SUPABASE_KEY);
+        xhr.send(formData);
+      });
+
+      // 保存到数据库
       const { data } = supabaseClient.storage
         .from(BUCKET)
         .getPublicUrl(path);
@@ -307,12 +1395,17 @@ async function uploadFiles(files){
         uploaded_at:new Date().toISOString()
       });
 
+      uploadedFiles++;
+
     }catch(err){
+      if(uploadModal) uploadModal.style.display = 'none';
       alert(t("uploadFail")+": "+err.message);
+      fileInput.value = '';
+      return;
     }
   }
 
-  document.getElementById('upload-modal').style.display = 'none';
+  if(uploadModal) uploadModal.style.display = 'none';
 
   statusEl.innerText = t("uploadDone");
   fileInput.value = '';
@@ -325,10 +1418,21 @@ document.getElementById("search").addEventListener("input",(e)=>{
 });
 
 function filterFiles(keyword){
-  if(!keyword) return allFiles;
-  return allFiles.filter(f =>
-    f.original_name.toLowerCase().includes(keyword.toLowerCase())
-  );
+  let filtered = allFiles;
+  
+  // 先按分类过滤
+  if(currentCategory !== 'all'){
+    filtered = filtered.filter(f => getFileCategory(f.original_name) === currentCategory);
+  }
+  
+  // 再按关键词搜索
+  if(keyword){
+    filtered = filtered.filter(f =>
+      f.original_name.toLowerCase().includes(keyword.toLowerCase())
+    );
+  }
+  
+  return filtered;
 }
 
 /* 渲染 */
@@ -344,17 +1448,26 @@ function renderFiles(data){
     const div = document.createElement('div');
     div.className='file-item';
 
-    div.innerHTML=`
-      <span>${f.original_name}</span>
-      <div>
-        <a class="btn btn-download" href="${f.public_url}" target="_blank">
-          ${btnText("download")}
-        </a>
-        <button class="btn btn-delete" onclick="delFile('${f.id}','${f.storage_path}')">
-          ${btnText("delete")}
-        </button>
-      </div>
-    `;
+    const span = document.createElement('span');
+    span.innerText = f.original_name;
+
+    const btnDiv = document.createElement('div');
+
+    const downloadBtn = document.createElement('button');
+    downloadBtn.className = 'btn btn-download';
+    downloadBtn.innerText = btnText("download");
+    downloadBtn.onclick = () => downloadFile(f.public_url, f.original_name);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn btn-delete';
+    deleteBtn.innerText = btnText("delete");
+    deleteBtn.onclick = () => delFile(f.id, f.storage_path);
+
+    btnDiv.appendChild(downloadBtn);
+    btnDiv.appendChild(deleteBtn);
+
+    div.appendChild(span);
+    div.appendChild(btnDiv);
 
     fileListEl.appendChild(div);
   });
@@ -377,10 +1490,99 @@ async function loadFiles(){
 window.delFile = async (id,path)=>{
   if(!confirm(t("confirmDelete"))) return;
 
-  await supabaseClient.storage.from(BUCKET).remove([path]);
-  await supabaseClient.from(TABLE).delete().eq('id',id);
+  const deleteModal = document.getElementById('delete-modal');
+  const progressBar = document.getElementById('delete-progress-bar');
+  const progressText = document.getElementById('delete-progress-text');
 
-  loadFiles();
+  deleteModal.style.display = 'flex';
+
+  try{
+    // 删除存储中的文件 (30%)
+    progressBar.style.width = '30%';
+    progressText.innerText = '30%';
+    
+    await supabaseClient.storage.from(BUCKET).remove([path]);
+
+    // 删除数据库记录 (70%)
+    progressBar.style.width = '70%';
+    progressText.innerText = '70%';
+    
+    await supabaseClient.from(TABLE).delete().eq('id',id);
+
+    // 完成 (100%)
+    progressBar.style.width = '100%';
+    progressText.innerText = '100%';
+
+    // 延迟500ms后关闭弹窗
+    setTimeout(() => {
+      deleteModal.style.display = 'none';
+      loadFiles();
+    }, 500);
+
+  }catch(err){
+    deleteModal.style.display = 'none';
+    alert('删除失败: '+err.message);
+  }
+};
+
+/* 下载 */
+window.downloadFile = async (url, filename) => {
+  const downloadModal = document.getElementById('download-modal');
+  const progressBar = document.getElementById('download-progress-bar');
+  const progressText = document.getElementById('download-progress-text');
+
+  downloadModal.style.display = 'flex';
+  progressBar.style.width = '0%';
+  progressText.innerText = '0%';
+
+  try {
+    const response = await fetch(url);
+    
+    if (!response.ok) throw new Error('下载失败');
+
+    const total = parseInt(response.headers.get('content-length'), 10);
+    let loaded = 0;
+
+    const reader = response.body.getReader();
+    const chunks = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) break;
+
+      chunks.push(value);
+      loaded += value.length;
+
+      const progress = Math.round((loaded / total) * 100);
+      progressBar.style.width = progress + '%';
+      progressText.innerText = progress + '%';
+    }
+
+    // 合并所有chunks
+    const blob = new Blob(chunks);
+
+    // 创建下载链接
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+
+    // 完成
+    progressBar.style.width = '100%';
+    progressText.innerText = '100%';
+
+    setTimeout(() => {
+      downloadModal.style.display = 'none';
+    }, 500);
+
+  } catch (err) {
+    downloadModal.style.display = 'none';
+    alert('下载失败: ' + err.message);
+  }
 };
 
 loadFiles();
