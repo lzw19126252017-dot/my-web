@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>文件传输</title>
+<title>公司内网系统</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <style>
@@ -279,6 +279,14 @@ h1{
   font-size:13px;
   margin-top:10px;
   text-align:center;
+}
+
+.login-footer{
+  font-size:12px;
+  font-weight:bold;
+  color:#6e6e73;
+  text-align:center;
+  margin-top:20px;
 }
 
 #app-container{
@@ -1442,6 +1450,7 @@ select{
     </div>
     <button class="login-btn" id="login-btn" onclick="handleLogin()">登录</button>
     <div class="login-error" id="login-error"></div>
+    <div class="login-footer">电科大学生出品</div>
   </div>
 </div>
 
@@ -1464,67 +1473,67 @@ select{
 
 <!-- iOS风格图标网格 -->
 <div class="icon-grid" id="icon-grid">
-  <div class="icon-item" onclick="openApp('files')">
+  <div class="icon-item" onclick="(async () => await openApp('files'))()">
     <div class="icon-bg">
       <span class="icon-emoji">📁</span>
     </div>
     <div class="icon-label" id="files-label">文件库</div>
   </div>
-  <div class="icon-item" onclick="openApp('announcements')">
+  <div class="icon-item" onclick="(async () => await openApp('announcements'))()">
     <div class="icon-bg">
       <span class="icon-emoji">📢</span>
     </div>
     <div class="icon-label" id="announcements-label">公告</div>
   </div>
-  <div class="icon-item" onclick="openApp('contacts')">
+  <div class="icon-item" onclick="(async () => await openApp('contacts'))()">
     <div class="icon-bg">
       <span class="icon-emoji">👥</span>
     </div>
     <div class="icon-label" id="contacts-label">通讯录</div>
   </div>
-  <div class="icon-item" onclick="openApp('meeting-rooms')">
+  <div class="icon-item" onclick="(async () => await openApp('meeting-rooms'))()">
     <div class="icon-bg">
       <span class="icon-emoji">🏢</span>
     </div>
     <div class="icon-label" id="meeting-rooms-label">会议室</div>
   </div>
-  <div class="icon-item" onclick="openApp('work-reports')">
+  <div class="icon-item" onclick="(async () => await openApp('work-reports'))()">
     <div class="icon-bg">
       <span class="icon-emoji">📊</span>
     </div>
     <div class="icon-label" id="work-reports-label">工作报告</div>
   </div>
-  <div class="icon-item" onclick="openApp('it-support')">
+  <div class="icon-item" onclick="(async () => await openApp('it-support'))()">
     <div class="icon-bg">
       <span class="icon-emoji">🛠️</span>
     </div>
     <div class="icon-label" id="it-support-label">IT服务</div>
   </div>
-  <div class="icon-item" onclick="openApp('attendance')">
+  <div class="icon-item" onclick="(async () => await openApp('attendance'))()">
     <div class="icon-bg">
       <span class="icon-emoji">⏰</span>
     </div>
     <div class="icon-label" id="attendance-label">考勤</div>
   </div>
-  <div class="icon-item" onclick="openApp('knowledge')">
+  <div class="icon-item" onclick="(async () => await openApp('knowledge'))()">
     <div class="icon-bg">
       <span class="icon-emoji">📚</span>
     </div>
     <div class="icon-label" id="knowledge-label">知识库</div>
   </div>
-  <div class="icon-item" onclick="openApp('projects')">
+  <div class="icon-item" onclick="(async () => await openApp('projects'))()">
     <div class="icon-bg">
       <span class="icon-emoji">📋</span>
     </div>
     <div class="icon-label" id="projects-label">项目管理</div>
   </div>
-  <div class="icon-item" onclick="openApp('dashboard')">
+  <div class="icon-item" onclick="(async () => await openApp('dashboard'))()">
     <div class="icon-bg">
       <span class="icon-emoji">📈</span>
     </div>
     <div class="icon-label" id="dashboard-label">仪表板</div>
   </div>
-  <div class="icon-item" onclick="openApp('devices')">
+  <div class="icon-item" onclick="(async () => await openApp('devices'))()">
     <div class="icon-bg">
       <span class="icon-emoji">💻</span>
     </div>
@@ -1983,7 +1992,7 @@ function handleLogout(){
 }
 
 // 显示应用
-function showApp(){
+async function showApp(){
   document.getElementById('login-container').style.display = 'none';
   document.getElementById('app-container').style.display = 'block';
   
@@ -2012,7 +2021,7 @@ function showApp(){
   }
   
   loadFiles();
-  initializeAllModules();
+  await initializeAllModules();
 }
 
 // 显示登录页面
@@ -2036,7 +2045,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // iOS风格导航函数
-function openApp(appName){
+async function openApp(appName){
   // 隐藏图标网格
   document.getElementById('icon-grid').style.display = 'none';
   
@@ -2063,14 +2072,14 @@ function openApp(appName){
   if(appName === 'devices'){
     initializeDevices();
   } else if(appName === 'announcements'){
-    loadAnnouncements();
+    await loadAnnouncements();
   } else if(appName === 'contacts'){
-    loadContacts();
+    await loadContacts();
   } else if(appName === 'meeting-rooms'){
     loadMeetingRooms();
     loadBookings();
   } else if(appName === 'work-reports'){
-    loadWorkReports();
+    await loadWorkReports();
   } else if(appName === 'it-support'){
     loadTickets();
   } else if(appName === 'attendance'){
@@ -2367,6 +2376,9 @@ const SUPABASE_URL = 'https://poyepondpknkzkuwgyxm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_BY4eSXnpQAcMlEUReNhIeQ_n4wA0SEI';
 const BUCKET = 'uploads';
 const TABLE = 'files';
+const EMPLOYEES_TABLE = 'employees';
+const ANNOUNCEMENTS_TABLE = 'announcements';
+const WORK_REPORTS_TABLE = 'work_reports';
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
@@ -3577,35 +3589,46 @@ loadFiles();
 setLanguage("zh");
 
 // 公告相关功能
-function loadAnnouncements(){
-  const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
-  const listEl = document.getElementById('announcements-list');
-  const currentUserRole = getCurrentUserRole();
-  
-  if(announcements.length === 0){
-    listEl.innerHTML = `<div style="text-align:center;color:#666;padding:40px;">${t("noAnnouncements")}</div>`;
-    return;
-  }
-  
-  listEl.innerHTML = announcements.map((announcement, index) => `
-    <div class="announcement-item">
-      <div class="announcement-header">
-        <h4 class="announcement-title">${announcement.title}</h4>
-        <div class="announcement-meta">
-          ${t("publisher")}: ${announcement.publisher} | ${t("publishTime")}: ${announcement.publishTime}
+async function loadAnnouncements(){
+  try {
+    const { data: announcements, error } = await supabaseClient
+      .from(ANNOUNCEMENTS_TABLE)
+      .select('*')
+      .order('timestamp', { ascending: false });
+    
+    if (error) throw error;
+    
+    const listEl = document.getElementById('announcements-list');
+    const currentUserRole = getCurrentUserRole();
+    
+    if(!announcements || announcements.length === 0){
+      listEl.innerHTML = `<div style="text-align:center;color:#666;padding:40px;">${t("noAnnouncements")}</div>`;
+      return;
+    }
+    
+    listEl.innerHTML = announcements.map((announcement) => `
+      <div class="announcement-item">
+        <div class="announcement-header">
+          <h4 class="announcement-title">${announcement.title}</h4>
+          <div class="announcement-meta">
+            ${t("publisher")}: ${announcement.publisher} | ${t("publishTime")}: ${announcement.publish_time}
+          </div>
         </div>
+        <div class="announcement-content">${announcement.content.replace(/\n/g, '<br>')}</div>
+        ${currentUserRole === 'admin' ? `
+          <div class="announcement-actions">
+            <button class="btn-delete-announcement" onclick="deleteAnnouncement(${announcement.id})">${t("delete")}</button>
+          </div>
+        ` : ''}
       </div>
-      <div class="announcement-content">${announcement.content.replace(/\n/g, '<br>')}</div>
-      ${currentUserRole === 'admin' ? `
-        <div class="announcement-actions">
-          <button class="btn-delete-announcement" onclick="deleteAnnouncement(${index})">${t("delete")}</button>
-        </div>
-      ` : ''}
-    </div>
-  `).join('');
+    `).join('');
+  } catch (error) {
+    console.error('Error loading announcements:', error);
+    document.getElementById('announcements-list').innerHTML = `<div style="text-align:center;color:#666;padding:40px;">加载公告失败: ${error.message}</div>`;
+  }
 }
 
-function publishAnnouncement(){
+async function publishAnnouncement(){
   const title = document.getElementById('announcement-title').value.trim();
   const content = document.getElementById('announcement-content').value.trim();
   
@@ -3614,43 +3637,58 @@ function publishAnnouncement(){
     return;
   }
   
-  const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
   const currentUser = sessionStorage.getItem('username');
   
-  announcements.unshift({
-    title: title,
-    content: content,
-    publisher: currentUser,
-    publishTime: new Date().toLocaleString('zh-CN')
-  });
-  
-  localStorage.setItem('announcements', JSON.stringify(announcements));
-  
-  // 清空输入框
-  document.getElementById('announcement-title').value = '';
-  document.getElementById('announcement-content').value = '';
-  
-  loadAnnouncements();
-  alert(t("announcementPublished"));
+  try {
+    const { data, error } = await supabaseClient
+      .from(ANNOUNCEMENTS_TABLE)
+      .insert([{
+        title: title,
+        content: content,
+        publisher: currentUser,
+        publish_time: new Date().toLocaleString('zh-CN'),
+        timestamp: new Date().toISOString()
+      }]);
+    
+    if (error) throw error;
+    
+    // 清空输入框
+    document.getElementById('announcement-title').value = '';
+    document.getElementById('announcement-content').value = '';
+    
+    await loadAnnouncements();
+    alert(t("announcementPublished"));
+  } catch (error) {
+    console.error('Error publishing announcement:', error);
+    alert('发布公告失败: ' + error.message);
+  }
 }
 
-function deleteAnnouncement(index){
+async function deleteAnnouncement(id){
   if(!confirm(t("confirmDeleteAnnouncement"))) return;
   
-  const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
-  announcements.splice(index, 1);
-  localStorage.setItem('announcements', JSON.stringify(announcements));
-  
-  loadAnnouncements();
-  alert(t("announcementDeleted"));
+  try {
+    const { error } = await supabaseClient
+      .from(ANNOUNCEMENTS_TABLE)
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+    
+    await loadAnnouncements();
+    alert(t("announcementDeleted"));
+  } catch (error) {
+    console.error('Error deleting announcement:', error);
+    alert('删除公告失败: ' + error.message);
+  }
 }
 
 // 初始化所有模块数据
-function initializeAllModules(){
+async function initializeAllModules(){
   // 添加默认数据（仅在首次使用时）
-  addDefaultData();
+  await addDefaultData();
   
-  initializeContacts();
+  await initializeContacts();
   initializeMeetingRooms();
   initializeWorkReports();
   initializeITSupport();
@@ -3661,15 +3699,99 @@ function initializeAllModules(){
 }
 
 // 添加默认演示数据
-function addDefaultData(){
+async function addDefaultData(){
   // 默认员工数据
-  if(!localStorage.getItem('contacts') || JSON.parse(localStorage.getItem('contacts')).length === 0){
-    const defaultContacts = [
-      { name: '张三', department: '技术部', position: '高级工程师', email: 'zhangsan@company.com', phone: '13800138001', extension: '101' },
-      { name: '李四', department: '市场部', position: '市场经理', email: 'lisi@company.com', phone: '13800138002', extension: '102' },
-      { name: '王五', department: '财务部', position: '会计师', email: 'wangwu@company.com', phone: '13800138003', extension: '103' }
-    ];
-    localStorage.setItem('contacts', JSON.stringify(defaultContacts));
+  try {
+    const { data: existingContacts, error } = await supabaseClient
+      .from(EMPLOYEES_TABLE)
+      .select('id')
+      .limit(1);
+    
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "relation does not exist"
+    
+    if (!existingContacts || existingContacts.length === 0) {
+      const defaultContacts = [
+        { name: '张三', department: '技术部', position: '高级工程师', email: 'zhangsan@company.com', phone: '13800138001', extension: '101' },
+        { name: '李四', department: '市场部', position: '市场经理', email: 'lisi@company.com', phone: '13800138002', extension: '102' },
+        { name: '王五', department: '财务部', position: '会计师', email: 'wangwu@company.com', phone: '13800138003', extension: '103' }
+      ];
+      const { error: insertError } = await supabaseClient
+        .from(EMPLOYEES_TABLE)
+        .insert(defaultContacts);
+      if (insertError) console.error('Error inserting default contacts:', insertError);
+    }
+  } catch (error) {
+    console.error('Error checking/adding default contacts:', error);
+  }
+  
+  // 默认公告数据
+  try {
+    const { data: existingAnnouncements, error } = await supabaseClient
+      .from(ANNOUNCEMENTS_TABLE)
+      .select('id')
+      .limit(1);
+    
+    if (error && error.code !== 'PGRST116') throw error;
+    
+    if (!existingAnnouncements || existingAnnouncements.length === 0) {
+      const defaultAnnouncements = [
+        {
+          title: '欢迎使用公司内网系统',
+          content: '公司内网系统现已上线，包含员工通讯录、公告发布、工作报告、会议室预订等功能。请大家积极使用，提升工作效率。',
+          publisher: 'admin',
+          publish_time: new Date().toLocaleString('zh-CN'),
+          timestamp: new Date().toISOString()
+        },
+        {
+          title: '系统更新通知',
+          content: '系统已升级到最新版本，新增了文件上传下载功能和在线聊天功能。如有问题请联系IT部门。',
+          publisher: 'admin',
+          publish_time: new Date(Date.now() - 86400000).toLocaleString('zh-CN'),
+          timestamp: new Date(Date.now() - 86400000).toISOString()
+        }
+      ];
+      const { error: insertError } = await supabaseClient
+        .from(ANNOUNCEMENTS_TABLE)
+        .insert(defaultAnnouncements);
+      if (insertError) console.error('Error inserting default announcements:', insertError);
+    }
+  } catch (error) {
+    console.error('Error checking/adding default announcements:', error);
+  }
+  
+  // 默认工作报告数据
+  try {
+    const { data: existingReports, error } = await supabaseClient
+      .from(WORK_REPORTS_TABLE)
+      .select('id')
+      .limit(1);
+    
+    if (error && error.code !== 'PGRST116') throw error;
+    
+    if (!existingReports || existingReports.length === 0) {
+      const defaultReports = [
+        {
+          type: 'daily',
+          content: '今日完成了项目需求分析和原型设计，进展顺利。',
+          author: 'admin',
+          date: new Date().toLocaleDateString('zh-CN'),
+          timestamp: new Date().toISOString()
+        },
+        {
+          type: 'weekly',
+          content: '本周主要工作：1. 完成系统架构设计 2. 数据库表结构设计 3. 前端界面原型设计 4. 与各部门沟通需求。下周计划：开始编码实现。',
+          author: 'admin',
+          date: new Date(Date.now() - 86400000).toLocaleDateString('zh-CN'),
+          timestamp: new Date(Date.now() - 86400000).toISOString()
+        }
+      ];
+      const { error: insertError } = await supabaseClient
+        .from(WORK_REPORTS_TABLE)
+        .insert(defaultReports);
+      if (insertError) console.error('Error inserting default work reports:', insertError);
+    }
+  } catch (error) {
+    console.error('Error checking/adding default work reports:', error);
   }
   
   // 默认会议室数据
@@ -3703,39 +3825,51 @@ function addDefaultData(){
 }
 
 // 通讯录相关功能
-function initializeContacts(){
-  loadContacts();
+async function initializeContacts(){
+  await addDefaultData();
+  await loadContacts();
   setupContactFilters();
 }
 
-function loadContacts(){
-  const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
-  const listEl = document.getElementById('contacts-list');
-  const currentUserRole = getCurrentUserRole();
-  
-  if(contacts.length === 0){
-    listEl.innerHTML = `<div style="text-align:center;color:#666;padding:40px;">${t("noContacts")}</div>`;
-    return;
-  }
-  
-  listEl.innerHTML = contacts.map((contact, index) => `
-    <div class="employee-card">
-      <div class="employee-info">
-        <div class="employee-name">${contact.name}</div>
-        <div class="employee-details">${contact.department} • ${contact.position}</div>
-        <div class="employee-details">${contact.email} • ${contact.phone} ${contact.extension ? '• 内线:' + contact.extension : ''}</div>
-      </div>
-      ${currentUserRole === 'admin' ? `
-        <div class="employee-actions">
-          <button onclick="editContact(${index})" style="padding:4px 8px;background:#0071e3;color:white;border:none;border-radius:4px;cursor:pointer;">${t("edit")}</button>
-          <button onclick="deleteContact(${index})" style="padding:4px 8px;background:#ff3b30;color:white;border:none;border-radius:4px;cursor:pointer;">${t("delete")}</button>
+async function loadContacts(){
+  try {
+    const { data: contacts, error } = await supabaseClient
+      .from(EMPLOYEES_TABLE)
+      .select('*')
+      .order('id');
+    
+    if (error) throw error;
+    
+    const listEl = document.getElementById('contacts-list');
+    const currentUserRole = getCurrentUserRole();
+    
+    if(!contacts || contacts.length === 0){
+      listEl.innerHTML = `<div style="text-align:center;color:#666;padding:40px;">${t("noContacts")}</div>`;
+      return;
+    }
+    
+    listEl.innerHTML = contacts.map((contact) => `
+      <div class="employee-card">
+        <div class="employee-info">
+          <div class="employee-name">${contact.name}</div>
+          <div class="employee-details">${contact.department} • ${contact.position}</div>
+          <div class="employee-details">${contact.email} • ${contact.phone} ${contact.extension ? '• 内线:' + contact.extension : ''}</div>
         </div>
-      ` : ''}
-    </div>
-  `).join('');
+        ${currentUserRole === 'admin' ? `
+          <div class="employee-actions">
+            <button onclick="editContact(${contact.id})" style="padding:4px 8px;background:#0071e3;color:white;border:none;border-radius:4px;cursor:pointer;">${t("edit")}</button>
+            <button onclick="deleteContact(${contact.id})" style="padding:4px 8px;background:#ff3b30;color:white;border:none;border-radius:4px;cursor:pointer;">${t("delete")}</button>
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Error loading contacts:', error);
+    document.getElementById('contacts-list').innerHTML = `<div style="text-align:center;color:#666;padding:40px;">加载员工名单失败: ${error.message}</div>`;
+  }
 }
 
-function addEmployee(){
+async function addEmployee(){
   const name = document.getElementById('employee-name').value.trim();
   const department = document.getElementById('employee-department').value.trim();
   const position = document.getElementById('employee-position').value.trim();
@@ -3748,64 +3882,87 @@ function addEmployee(){
     return;
   }
   
-  const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
-  contacts.push({
-    name: name,
-    department: department,
-    position: position,
-    email: email,
-    phone: phone,
-    extension: extension
-  });
-  
-  localStorage.setItem('contacts', JSON.stringify(contacts));
-  
-  // 清空输入框
-  document.getElementById('employee-name').value = '';
-  document.getElementById('employee-department').value = '';
-  document.getElementById('employee-position').value = '';
-  document.getElementById('employee-email').value = '';
-  document.getElementById('employee-phone').value = '';
-  document.getElementById('employee-extension').value = '';
-  
-  loadContacts();
-  alert(t("employeeAdded"));
+  try {
+    const { data, error } = await supabaseClient
+      .from(EMPLOYEES_TABLE)
+      .insert([{
+        name: name,
+        department: department,
+        position: position,
+        email: email,
+        phone: phone,
+        extension: extension
+      }]);
+    
+    if (error) throw error;
+    
+    // 清空输入框
+    document.getElementById('employee-name').value = '';
+    document.getElementById('employee-department').value = '';
+    document.getElementById('employee-position').value = '';
+    document.getElementById('employee-email').value = '';
+    document.getElementById('employee-phone').value = '';
+    document.getElementById('employee-extension').value = '';
+    
+    await loadContacts();
+    alert(t("employeeAdded"));
+  } catch (error) {
+    console.error('Error adding employee:', error);
+    alert('添加员工失败: ' + error.message);
+  }
 }
 
-function deleteContact(index){
+async function deleteContact(id){
   if(!confirm(t("confirmDelete"))) return;
   
-  const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
-  contacts.splice(index, 1);
-  localStorage.setItem('contacts', JSON.stringify(contacts));
-  
-  loadContacts();
+  try {
+    const { error } = await supabaseClient
+      .from(EMPLOYEES_TABLE)
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+    
+    await loadContacts();
+  } catch (error) {
+    console.error('Error deleting contact:', error);
+    alert('删除员工失败: ' + error.message);
+  }
 }
 
-function editContact(index){
-  const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
-  const contact = contacts[index];
-  
-  if(!contact) return;
-  
-  // 填充编辑表单
-  document.getElementById('employee-name').value = contact.name || '';
-  document.getElementById('employee-department').value = contact.department || '';
-  document.getElementById('employee-position').value = contact.position || '';
-  document.getElementById('employee-email').value = contact.email || '';
-  document.getElementById('employee-phone').value = contact.phone || '';
-  document.getElementById('employee-extension').value = contact.extension || '';
-  
-  // 改变按钮文本和功能
-  const addBtn = document.getElementById('add-employee-btn');
-  addBtn.innerText = t("updateEmployeeInfo");
-  addBtn.onclick = () => updateContact(index);
-  
-  // 滚动到表单位置
-  document.getElementById('admin-contacts-panel').scrollIntoView({ behavior: 'smooth' });
+async function editContact(id){
+  try {
+    const { data: contact, error } = await supabaseClient
+      .from(EMPLOYEES_TABLE)
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    if (!contact) return;
+    
+    // 填充编辑表单
+    document.getElementById('employee-name').value = contact.name || '';
+    document.getElementById('employee-department').value = contact.department || '';
+    document.getElementById('employee-position').value = contact.position || '';
+    document.getElementById('employee-email').value = contact.email || '';
+    document.getElementById('employee-phone').value = contact.phone || '';
+    document.getElementById('employee-extension').value = contact.extension || '';
+    
+    // 改变按钮文本和功能
+    const addBtn = document.getElementById('add-employee-btn');
+    addBtn.innerText = t("updateEmployeeInfo");
+    addBtn.onclick = () => updateContact(id);
+    
+    // 滚动到表单位置
+    document.getElementById('admin-contacts-panel').scrollIntoView({ behavior: 'smooth' });
+  } catch (error) {
+    console.error('Error editing contact:', error);
+    alert('编辑员工失败: ' + error.message);
+  }
 }
 
-function updateContact(index){
+async function updateContact(id){
   const name = document.getElementById('employee-name').value.trim();
   const department = document.getElementById('employee-department').value.trim();
   const position = document.getElementById('employee-position').value.trim();
@@ -3818,19 +3975,20 @@ function updateContact(index){
     return;
   }
   
-  const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
-  
-  if(index >= 0 && index < contacts.length){
-    contacts[index] = {
-      name: name,
-      department: department,
-      position: position,
-      email: email,
-      phone: phone,
-      extension: extension
-    };
+  try {
+    const { error } = await supabaseClient
+      .from(EMPLOYEES_TABLE)
+      .update({
+        name: name,
+        department: department,
+        position: position,
+        email: email,
+        phone: phone,
+        extension: extension
+      })
+      .eq('id', id);
     
-    localStorage.setItem('contacts', JSON.stringify(contacts));
+    if (error) throw error;
     
     // 清空输入框
     document.getElementById('employee-name').value = '';
@@ -3845,8 +4003,11 @@ function updateContact(index){
     addBtn.innerText = t("addEmployee");
     addBtn.onclick = addEmployee;
     
-    loadContacts();
+    await loadContacts();
     alert(t("employeeUpdated"));
+  } catch (error) {
+    console.error('Error updating contact:', error);
+    alert('更新员工失败: ' + error.message);
   }
 }
 
@@ -3982,11 +4143,11 @@ function loadBookings(){
 }
 
 // 工作报告相关功能
-function initializeWorkReports(){
-  loadWorkReports();
+async function initializeWorkReports(){
+  await loadWorkReports();
 }
 
-function submitWorkReport(){
+async function submitWorkReport(){
   const type = document.getElementById('report-type').value;
   const content = document.getElementById('report-content').value.trim();
   
@@ -3995,46 +4156,63 @@ function submitWorkReport(){
     return;
   }
   
-  const reports = JSON.parse(localStorage.getItem('workReports') || '[]');
   const currentUser = sessionStorage.getItem('username');
   
-  reports.unshift({
-    type: type,
-    content: content,
-    author: currentUser,
-    date: new Date().toLocaleDateString('zh-CN'),
-    timestamp: new Date().toISOString()
-  });
-  
-  localStorage.setItem('workReports', JSON.stringify(reports));
-  
-  // 清空输入框
-  document.getElementById('report-content').value = '';
-  
-  loadWorkReports();
-  alert(t("reportSubmitted"));
+  try {
+    const { data, error } = await supabaseClient
+      .from(WORK_REPORTS_TABLE)
+      .insert([{
+        type: type,
+        content: content,
+        author: currentUser,
+        date: new Date().toLocaleDateString('zh-CN'),
+        timestamp: new Date().toISOString()
+      }]);
+    
+    if (error) throw error;
+    
+    // 清空输入框
+    document.getElementById('report-content').value = '';
+    
+    await loadWorkReports();
+    alert(t("reportSubmitted"));
+  } catch (error) {
+    console.error('Error submitting work report:', error);
+    alert('提交工作报告失败: ' + error.message);
+  }
 }
 
-function loadWorkReports(){
-  const reports = JSON.parse(localStorage.getItem('workReports') || '[]');
-  const currentUser = sessionStorage.getItem('username');
-  const userReports = reports.filter(report => report.author === currentUser);
-  const listEl = document.getElementById('reports-list');
-  
-  if(userReports.length === 0){
-    listEl.innerHTML = `<div style="text-align:center;color:#666;padding:20px;">${t("noReports")}</div>`;
-    return;
-  }
-  
-  listEl.innerHTML = userReports.map(report => `
-    <div style="padding:15px;margin-bottom:10px;background:#f8f9fa;border-radius:8px;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-        <div style="font-weight:600;">${t(report.type === 'daily' ? 'dailyReport' : 'weeklyReport')}</div>
-        <div style="color:#666;font-size:14px;">${report.date}</div>
+async function loadWorkReports(){
+  try {
+    const currentUser = sessionStorage.getItem('username');
+    const { data: reports, error } = await supabaseClient
+      .from(WORK_REPORTS_TABLE)
+      .select('*')
+      .eq('author', currentUser)
+      .order('timestamp', { ascending: false });
+    
+    if (error) throw error;
+    
+    const listEl = document.getElementById('reports-list');
+    
+    if(!reports || reports.length === 0){
+      listEl.innerHTML = `<div style="text-align:center;color:#666;padding:20px;">${t("noReports")}</div>`;
+      return;
+    }
+    
+    listEl.innerHTML = reports.map(report => `
+      <div style="padding:15px;margin-bottom:10px;background:#f8f9fa;border-radius:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+          <div style="font-weight:600;">${t(report.type === 'daily' ? 'dailyReport' : 'weeklyReport')}</div>
+          <div style="color:#666;font-size:14px;">${report.date}</div>
+        </div>
+        <div style="color:#333;">${report.content.replace(/\n/g, '<br>')}</div>
       </div>
-      <div style="color:#333;">${report.content.replace(/\n/g, '<br>')}</div>
-    </div>
-  `).join('');
+    `).join('');
+  } catch (error) {
+    console.error('Error loading work reports:', error);
+    document.getElementById('reports-list').innerHTML = `<div style="text-align:center;color:#666;padding:20px;">加载工作报告失败: ${error.message}</div>`;
+  }
 }
 
 // IT服务台相关功能
